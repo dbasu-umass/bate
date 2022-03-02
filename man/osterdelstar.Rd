@@ -2,7 +2,7 @@
 % Please edit documentation in R/osterdelstar.R
 \name{osterdelstar}
 \alias{osterdelstar}
-\title{Computes delta^ according to Oster (2019)}
+\title{Computes delta* according to Oster (2019)}
 \usage{
 osterdelstar(parameters, Rmax)
 }
@@ -19,5 +19,5 @@ A data frame with three columns:
 \item{slope}{Slope of the function, delta=f(Rmax)}
 }
 \description{
-Computes delta^ according to Oster (2019)
+Computes delta* according to Oster (2019)
 }

@@ -1,4 +1,4 @@
-#' Computes delta^ according to Oster (2019)
+#' Computes delta* according to Oster (2019)
 #'
 #' @param parameters A vector of parameters that is generated after estimating the short, intermediate and auxiliary regressions.
 #' @param Rmax A real number that lies between Rtilde (R-squared for the intermediate regression) and 1. 
