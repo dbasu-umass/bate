@@ -12,4 +12,7 @@ RoxygenNote: 7.1.2
 Imports: 
     ggplot2,
     concaveman,
-    dplyr
+    dplyr,
+    stats,
+    magrittr,
+    tidyselect
