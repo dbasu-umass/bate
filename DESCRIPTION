@@ -2,15 +2,14 @@ Package: bate
 Title: Computes Bias-Adjusted Treatment Effect
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Deepankar", "Basu", , "dbasu@umass.edu", role = c("aut"))
+    person("Deepankar", "Basu", , "dbasu@umass.edu", role = c("aut")),
     person("Evan", "Wasner", , "ewasner@umass.edu", role = c("aut", "cre")))
 Description: The package computes quantiles of treatement effects after adjusting for the presence of omitted variable bias.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-Depends: 
-    tidyverse
 Imports: 
     ggplot2,
-    concaveman
+    concaveman,
+    dplyr
