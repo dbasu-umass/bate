@@ -21,4 +21,3 @@ cplotbias <- function(data){
   # return plot
   return(p)
 }
-
