@@ -22,30 +22,3 @@ cplotbias <- function(data){
   return(p)
 }
 
-# This function creates a filled contour plot
-# of the magnitude of betastar over the points of
-# a box in the (x=delta, y=Rmax) plane.
-# "data" is the output from the "ovbias" function
-dplotbate <- function(data){
-  
-  # Bin width for histogram
-  mybwd <- (max(data$bstar)-min(data$bstar))/50
-  
-  # Bin width for histogram
-  mybwd <- (max(data$bstar)-min(data$bstar))/50
-  
-  # Create histogram with density
-  p <- ggplot(data = data.frame(bstar=data$bstar), aes(x=bstar)) +
-    geom_histogram(aes(y=..density..),binwidth = mybwd,
-                   color="grey", fill="grey") +
-    geom_density(color="red", size=1) +
-    labs(
-      x=TeX("$\\beta$*"),
-      y="",
-      title=TeX("Distribution of Bias Adjusted Treatment Effect $\\beta$*")
-    ) +
-    theme_minimal()
-  
-  # Return plot
-  return(p)
-}
