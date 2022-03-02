@@ -2,7 +2,7 @@
 % Please edit documentation in R/osterbds.R
 \name{osterbds}
 \alias{osterbds}
-\title{Compute identified set according to Oster (2019)}
+\title{Computes identified set according to Oster (2019)}
 \usage{
 osterbds(parameters, Rmax)
 }
@@ -12,11 +12,11 @@ osterbds(parameters, Rmax)
 \item{Rmax}{A real number which lies between Rtilde (R-squared for the intermediate regression) and 1.}
 }
 \value{
-A list with three elements:
+A data frame with three columns:
 \item{Discriminant}{The value of the discriminant of the quadratic equation that is solved to generate the identified set}
 \item{Interval1}{The interval formed with the first root of the quadratic equation}
 \item{Interval2}{The interval formed with the first root of the quadratic equation}
 }
 \description{
-Compute identified set according to Oster (2019)
+Computes identified set according to Oster (2019)
 }

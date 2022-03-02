@@ -3,7 +3,7 @@
 #' @param parameters A vector of parameters that is generated after estimating the short, intermediate and auxiliary regressions. 
 #' @param Rmax A real number which lies between Rtilde (R-squared for the intermediate regression) and 1. 
 #'
-#' @return A list with three elements:
+#' @return A data frame with three columns:
 #' \item{Discriminant}{The value of the discriminant of the quadratic equation that is solved to generate the identified set}
 #' \item{Interval1}{The interval formed with the first root of the quadratic equation}
 #' \item{Interval2}{The interval formed with the first root of the quadratic equation}
