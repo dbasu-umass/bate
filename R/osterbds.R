@@ -1,4 +1,4 @@
-#' Compute identified set according to Oster (2019)
+#' Computes identified set according to Oster (2019)
 #'
 #' @param parameters A vector of parameters that is generated after estimating the short, intermediate and auxiliary regressions. 
 #' @param Rmax A real number which lies between Rtilde (R-squared for the intermediate regression) and 1. 
