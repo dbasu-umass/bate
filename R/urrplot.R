@@ -5,7 +5,7 @@
 #' @param deltahigh The upper limit for delta.
 #' @param Rlow The lower limit for Rmax.
 #' @param Rhigh The upper limit for Rmax. 
-#' @param e The step size of the grid.
+#' @param e The step size of the grid in the x and y directions.
 #'
 #' @importFrom ggplot2 "geom_vline"
 #' @importFrom ggplot2 "scale_fill_manual"

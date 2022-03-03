@@ -17,7 +17,7 @@ urrplot(parameters, deltalow, deltahigh, Rlow, Rhigh, e)
 
 \item{Rhigh}{The upper limit for Rmax.}
 
-\item{e}{The step size of the grid.}
+\item{e}{The step size of the grid in the x and y directions.}
 }
 \value{
 A plot object created by ggplot
