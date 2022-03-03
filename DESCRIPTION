@@ -15,4 +15,5 @@ Imports:
     dplyr,
     stats,
     magrittr,
-    tidyselect
+    tidyselect,
+    purrr
