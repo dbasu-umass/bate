@@ -16,4 +16,5 @@ Imports:
     stats,
     magrittr,
     tidyselect,
-    purrr
+    purrr,
+    latex2exp

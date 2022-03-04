@@ -1,5 +1,3 @@
-utils::globalVariables(c("Rmax", "TeX", "aes", "bias", "delta", "ggplot", 
-                         "guide_legend", "guides", "labs","stat_contour_filled", 
-                         "theme_minimal", "bstar","..density..", "D",
+utils::globalVariables(c("Rmax",  "bias", "delta","bstar", "D",
                          "distance","closest_bias","difference","withine",
-                         "root"))
+                         "root","..density.."))

@@ -2,6 +2,15 @@
 #'
 #' @param parameters A vector of parameters that is generated after estimating the short, intermediate and auxiliary regressions.
 #'  
+#' @importFrom latex2exp "Tex"
+#' @importFrom ggplot2 "aes"
+#' @importFrom ggplot2 "ggplot"
+#' @importFrom ggplot2 "guide_legend"
+#' @importFrom ggplot2 "stat_contour_filled"
+#' @importFrom ggplot2 "theme_minimal"
+#' @importFrom ggplot2 "labs"
+#' @importFrom ggplot2 "guides"
+#' 
 #'
 #' @return A plot object created with ggplot
 #' @export
