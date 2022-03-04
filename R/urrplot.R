@@ -25,7 +25,35 @@
 #' @return A plot object created by ggplot
 #' @export
 #'
+#'@examples 
 #' 
+#' ## Load data set
+#' data("NLSY_IQ")
+#'  
+#' ## Set age and race as factor variables
+#' NLSY_IQ$age <- factor(NLSY_IQ$age)
+#' NLSY_IQ$race <- factor(NLSY_IQ$race)
+#'    
+#' ## Collect parameters from the short, intermediate and auxiliary regressions
+#' parameters <- collect_par(
+#' data = NLSY_IQ, outcome = "iq_std", 
+#' treatment = "BF_months", 
+#' control = c("age","sex","income","motherAge","motherEDU","mom_married","race"),
+#' other_regressors = c("sex","age"))
+#' 
+#' ## Set limits for the bounded box
+#' Rlow <- parameters$Rtilde
+#' Rhigh <- 0.61
+#' deltalow <- 0.01
+#' deltahigh <- 0.99
+#' e <- 0.01
+#' 
+#' ## Create region plot for bounded box
+#' p1 <- urrplot(parameters, deltalow, deltahigh, Rlow, Rhigh, e=e)
+#' 
+#' ## See plot
+#' print(p1)
+#'  
 urrplot <- function(parameters, deltalow, deltahigh, Rlow, Rhigh, e){
   
   # Check if delta parameters are 1
