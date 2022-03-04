@@ -11,7 +11,7 @@
 #' 
 #' @importFrom ggplot2 "geom_density"
 #' @importFrom ggplot2 "geom_histogram"
-#' @importFrom latex2exp "Tex"
+#' @importFrom latex2exp "TeX"
 #' @importFrom ggplot2 "aes"
 #' @importFrom ggplot2 "ggplot"
 #' @importFrom ggplot2 "guide_legend"

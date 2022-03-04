@@ -7,7 +7,7 @@
 \format{
 A data frame with twelve variables:
 \describe{
-\item{\code{id_std}}{standardized IQ score, PIAT score}
+\item{\code{iq_std}}{standardized IQ score, PIAT score}
 \item{\code{BF_months}}{months of breast feeding}
 \item{\code{mom_drink_preg_all}}{did mother drink at all during pregnancy}
 \item{\code{lbw_preterm}}{low birth weight + preterm}
@@ -15,6 +15,7 @@ A data frame with twelve variables:
 \item{\code{female}}{child female}
 \item{\code{black}}{mother black}
 \item{\code{motherAge}}{age of mother}
+\item{\code{motherEDU}}{years of schooling of mother}
 \item{\code{mom_married}}{is the mother married?}
 \item{\code{income}}{annual income of mother}
 \item{\code{sex}}{child sex}

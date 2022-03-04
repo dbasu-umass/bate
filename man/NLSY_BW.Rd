@@ -15,6 +15,7 @@ A data frame with twelve variables:
 \item{\code{female}}{child female}
 \item{\code{black}}{mother black}
 \item{\code{motherAge}}{age of mother}
+\item{\code{motherEDU}}{years of schooling of mother}
 \item{\code{mom_married}}{is the mother married?}
 \item{\code{income}}{annual income of mother}
 \item{\code{sex}}{years of schooling of mother}

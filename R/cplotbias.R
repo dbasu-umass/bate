@@ -2,7 +2,7 @@
 #'
 #' @param data A data frame that is the output from the "ovbias" function.
 #'
-#' @importFrom latex2exp "Tex"
+#' @importFrom latex2exp "TeX"
 #' @importFrom ggplot2 "aes"
 #' @importFrom ggplot2 "ggplot"
 #' @importFrom ggplot2 "guide_legend"

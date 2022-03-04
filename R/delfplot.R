@@ -2,7 +2,7 @@
 #'
 #' @param parameters A vector of parameters that is generated after estimating the short, intermediate and auxiliary regressions.
 #'  
-#' @importFrom latex2exp "Tex"
+#' @importFrom latex2exp "TeX"
 #' @importFrom ggplot2 "aes"
 #' @importFrom ggplot2 "ggplot"
 #' @importFrom ggplot2 "guide_legend"
