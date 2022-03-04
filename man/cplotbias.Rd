@@ -15,3 +15,37 @@ A plot object created with ggplot
 \description{
 Create contour plot of bias
 }
+\examples{
+## Load data set
+data("NLSY_IQ")
+ 
+## Set age and race as factor variables
+NLSY_IQ$age <- factor(NLSY_IQ$age)
+NLSY_IQ$race <- factor(NLSY_IQ$race)
+   
+## Collect parameters from the short, intermediate and auxiliary regressions
+parameters <- collect_par(
+data = NLSY_IQ, outcome = "iq_std", 
+treatment = "BF_months", 
+control = c("age","sex","income","motherAge","motherEDU","mom_married","race"),
+other_regressors = c("sex","age"))
+
+## Set limits for the bounded box
+Rlow <- parameters$Rtilde
+Rhigh <- 0.61
+deltalow <- 0.01
+deltahigh <- 0.99
+e <- 0.01
+
+## Compute bias and bias-adjusted treatment effect
+OVB <- ovbias(
+parameters = parameters, 
+deltalow=deltalow, 
+deltahigh=deltahigh, Rhigh=Rhigh, 
+e=e)
+
+## Contour Plot of bias over the bounded box
+p2 <- cplotbias(OVB$Data)
+print(p2)
+
+}
