@@ -20,10 +20,52 @@ ovbias(parameters, deltalow, deltahigh, Rhigh, e)
 \value{
 List with three elements:
 
-\item{Data}{Data frame containing the bias and bias-adjusted treatment effect for each point on the grid}
+\item{Data}{Data frame containing the bias ($bias) and bias-adjusted treatment effect ($bstar) for each point on the grid}
 \item{bias_Distribution}{Quantiles (2.5,5.0,50,95,97.5) of the empirical distribution of bias}
 \item{bstar_Distribution}{Quantiles (2.5,5.0,50,95,97.5) of the empirical distribution of the bias-adjusted treatment effect}
 }
 \description{
 Compute bias adjusted treatment effect taking parameter vector as input.
+}
+\examples{
+## Load data set
+data("NLSY_IQ")
+ 
+## Set age and race as factor variables
+NLSY_IQ$age <- factor(NLSY_IQ$age)
+NLSY_IQ$race <- factor(NLSY_IQ$race)
+   
+## Collect parameters from the short, intermediate and auxiliary regressions
+parameters <- collect_par(
+data = NLSY_IQ, outcome = "iq_std", 
+treatment = "BF_months", 
+control = c("age","sex","income","motherAge","motherEDU","mom_married","race"),
+other_regressors = c("sex","age"))
+
+## Set limits for the bounded box
+Rlow <- parameters$Rtilde
+Rhigh <- 0.61
+deltalow <- 0.01
+deltahigh <- 0.99
+e <- 0.01
+
+## Compute bias and bias-adjusted treatment effect
+OVB <- ovbias(
+parameters = parameters, 
+deltalow=deltalow, 
+deltahigh=deltahigh, Rhigh=Rhigh, 
+e=e)
+
+## Default quantiles of bias
+(OVB$bias_Distribution)
+
+## Chosen quantilesof bias
+quantile(OVB$Data$bias, c(0.01,0.05,0.1,0.9,0.95,0.975))
+
+## Default quantiles of bias-adjusted treatment effect
+(OVB$bstar_Distribution)
+
+## Chosen quantiles of bias-adjusted treatment effect
+quantile(OVB$Data$bstar, c(0.01,0.05,0.1,0.9,0.95,0.975))
+
 }
