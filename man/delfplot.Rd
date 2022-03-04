@@ -15,3 +15,30 @@ A plot object created with ggplot
 \description{
 Plot graph of function delta=f(Rmax)
 }
+\examples{
+## Load data set
+data("NLSY_IQ")
+ 
+## Set age and race as factor variables
+NLSY_IQ$age <- factor(NLSY_IQ$age)
+NLSY_IQ$race <- factor(NLSY_IQ$race)
+   
+## Collect parameters from the short, intermediate and auxiliary regressions
+parameters <- collect_par(
+data = NLSY_IQ, outcome = "iq_std", 
+treatment = "BF_months", 
+control = c("age","sex","income","motherAge","motherEDU","mom_married","race"),
+other_regressors = c("sex","age"))
+
+## Set limits for the bounded box
+Rlow <- parameters$Rtilde
+Rhigh <- 0.61
+deltalow <- 0.01
+deltahigh <- 0.99
+e <- 0.01
+
+## Oster's method: Plot of delta = f(Rmax)
+p4 <- delfplot(parameters = parameters)
+print(p4)
+
+}
