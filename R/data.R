@@ -4,7 +4,7 @@
 #' children's IQ score. Natality detail files are from 2001 and 2002. 
 #' Data is from the NLSY Children and Young Adults panel.
 #' 
-#' @format A data frame with twelve variables:
+#' @format A data frame with 6514 observations on 13 variables:
 #' \describe{
 #' \item{\code{iq_std}}{standardized IQ score, PIAT score}
 #' \item{\code{BF_months}}{months of breast feeding}
@@ -25,6 +25,12 @@
 #'
 #' Source: \url{https://drive.google.com/file/d/1O1W9dP8F3B1DnAZGBegpoqCfysUrn7Uc/view?usp=sharing}
 #'
+#' @examples 
+#' ## Load data set
+#' data("NLSY_IQ")
+#' ## See names of variables
+#' names(NLSY_IQ)
+#'
 "NLSY_IQ"
 
 #' NLSY Birth Weight.
@@ -33,7 +39,7 @@
 #' children's birth weight. Natality detail files are from 2001 and 2002. 
 #' Data is from the NLSY Children and Young Adults panel.
 #' 
-#' @format A data frame with twelve variables:
+#' @format A data frame with 7686 observations on 13 variables:
 #' \describe{
 #' \item{\code{birth_wt}}{birth weight, grams}
 #' \item{\code{BF_months}}{months of breast feeding}
@@ -55,5 +61,11 @@
 #' 
 #'
 #' Source: \url{https://drive.google.com/file/d/1O1W9dP8F3B1DnAZGBegpoqCfysUrn7Uc/view?usp=sharing}
+#'
+#' @examples 
+#' ## Load data set
+#' data("NLSY_BW")
+#' ## See names of variables
+#' names(NLSY_BW)
 #'
 "NLSY_BW"

@@ -5,7 +5,7 @@
 \alias{NLSY_IQ}
 \title{NLSY IQ.}
 \format{
-A data frame with twelve variables:
+A data frame with 6514 observations on 13 variables:
 \describe{
 \item{\code{iq_std}}{standardized IQ score, PIAT score}
 \item{\code{BF_months}}{months of breast feeding}
@@ -31,5 +31,12 @@ NLSY_IQ
 NLSY data to analyse the effect of maternal behaviour on
 children's IQ score. Natality detail files are from 2001 and 2002.
 Data is from the NLSY Children and Young Adults panel.
+}
+\examples{
+## Load data set
+data("NLSY_IQ")
+## See names of variables
+names(NLSY_IQ)
+
 }
 \keyword{datasets}

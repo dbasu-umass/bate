@@ -5,7 +5,7 @@
 \alias{NLSY_BW}
 \title{NLSY Birth Weight.}
 \format{
-A data frame with twelve variables:
+A data frame with 7686 observations on 13 variables:
 \describe{
 \item{\code{birth_wt}}{birth weight, grams}
 \item{\code{BF_months}}{months of breast feeding}
@@ -33,5 +33,12 @@ NLSY_BW
 NLSY data to analyse the effect of maternal behaviour on
 children's birth weight. Natality detail files are from 2001 and 2002.
 Data is from the NLSY Children and Young Adults panel.
+}
+\examples{
+## Load data set
+data("NLSY_BW")
+## See names of variables
+names(NLSY_BW)
+
 }
 \keyword{datasets}
