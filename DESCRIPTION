@@ -4,7 +4,12 @@ Version: 0.0.0.9000
 Authors@R: c(
     person("Deepankar", "Basu", , "dbasu@umass.edu", role = c("aut")),
     person("Evan", "Wasner", , "ewasner@umass.edu", role = c("aut", "cre")))
-Description: The package computes quantiles of treatement effects after adjusting for the presence of omitted variable bias.
+Description: A package for computing bounds for the treatment effect 
+    after adjusting for the presence of omitted variables in linear  
+    econometric models. You supply the data, identify the outcome and 
+    treatment variables and additional regressors. The main functions
+    will compute bounds for the bias-adjusted treatment effect. Many
+    plot functions allow easy visualization of results.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
