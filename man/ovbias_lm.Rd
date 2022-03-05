@@ -31,3 +31,45 @@ List with three elements:
 \description{
 Compute bias adjusted treatment effect taking three lm objects as input.
 }
+\examples{
+## Load data set
+data("NLSY_IQ")
+ 
+## Set age and race as factor variables
+NLSY_IQ$age <- factor(NLSY_IQ$age)
+NLSY_IQ$race <- factor(NLSY_IQ$race)
+
+## Short regression
+reg_s <- lm(iq_std ~ BF_months + factor(age) + sex, data = NLSY_IQ)
+
+## Intermediate regression
+reg_i <- lm(iq_std ~ BF_months + 
+factor(age) + sex + income + motherAge + 
+motherEDU + mom_married + factor(race),
+data = NLSY_IQ)
+
+## Auxiliary regression
+reg_a <- lm(BF_months ~ factor(age) + 
+sex + income + motherAge + motherEDU + 
+mom_married + factor(race), data = NLSY_IQ)
+
+## Set limits for the bounded box
+Rlow <- summary(reg_i)$r.squared
+Rhigh <- 0.61
+deltalow <- 0.01
+deltahigh <- 0.99
+e <- 0.01
+
+## Compute bias and bias-adjusted treatment effect
+ovb_lm <- ovbias_lm(lm_shrt = reg_s,lm_int = reg_i, 
+lm_aux = reg_a, deltalow=deltalow, deltahigh=deltahigh, 
+Rhigh=Rhigh, e=e)
+
+## Default quantiles of bias
+ovb_lm$bias_Distribution
+
+# Default quantiles of bias-adjusted treatment effect
+ovb_lm$bstar_Distribution
+
+
+}
