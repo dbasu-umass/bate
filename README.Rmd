@@ -115,7 +115,7 @@ deltahigh <- 0.99
 e <- 0.01
 ```
 Now we can use the `ovbias()` function to compute the empirical distribution of omitted variable bias and BATE. Note that this step make take a few minutes, depending on the dimensions of the box and the size of `e`, to complete itself.
-```{r, results='hide'}
+```{r, results='hide', message=FALSE}
 OVB <- bate::ovbias(
   parameters = parameters,
   deltalow=deltalow, 
