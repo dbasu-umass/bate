@@ -73,7 +73,7 @@ dplotbate <- function(data){
     labs(
       x=TeX("$\\beta$*"),
       y="",
-      title=TeX("Distribution of Bias Adjusted Treatment Effect $\\beta$*")
+      title=TeX("Distribution of $\\beta$*")
     ) +
     theme_minimal()
   
