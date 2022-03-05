@@ -19,3 +19,7 @@ Imports:
     tidyselect,
     purrr,
     latex2exp
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr
