@@ -140,7 +140,7 @@ functions:
 -   `osterdelstar()`: the value of *δ*<sup>\*</sup> for a chosen value
     of *R*<sub>*m**a**x*</sub>;
 -   `delfplot()`: a plot of the graph of the function,
-    *δ* = *f*(*R*<sub>*m**a**x*</sub>.
+    *δ* = *f*(*R*<sub>*m**a**x*</sub>).
 
 ## Installation
 
@@ -248,3 +248,20 @@ above).
 #>   2.5%     5%    50%    95%  97.5% 
 #> -0.021 -0.017  0.009  0.017  0.017
 ```
+
+We can create the histogram and density plot of the omitted variable
+bias.
+
+``` r
+bate::dplotbate(OVB$Data)
+```
+
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="75%" />
+
+We can also create a contour plot of BATE over the bounded box.
+
+``` r
+bate::cplotbias(OVB$Data)
+```
+
+<img src="man/figures/README-unnamed-chunk-12-1.png" width="75%" />

@@ -64,7 +64,7 @@ The methodology proposed in Oster (2019) is implemented via these functions:
 
 * `osterbds()`: identified sets according to Oster's methodology;
 * `osterdelstar()`: the value of $\delta^*$ for a chosen value of $R_{max}$;
-* `delfplot()`: a plot of the graph of the function, $\delta=f(R_{max}$.
+* `delfplot()`: a plot of the graph of the function, $\delta=f(R_{max})$.
 
 ## Installation
 
@@ -115,7 +115,7 @@ deltahigh <- 0.99
 e <- 0.01
 ```
 Now we can use the `ovbias()` function to compute the empirical distribution of omitted variable bias and BATE. Note that this step make take a few minutes, depending on the dimensions of the box and the size of `e`, to complete itself.
-```{r}
+```{r, results='hide'}
 OVB <- bate::ovbias(
   parameters = parameters,
   deltalow=deltalow, 
@@ -130,4 +130,13 @@ We can now see the quantiles of omitted variable bias
 and quantiles of the BATE (computed over the bounded box we chose above).
 ```{r}
 (OVB$bstar_Distribution)
+```
+We can create the histogram and density plot of the omitted variable bias.
+```{r, out.width="75%"}
+bate::dplotbate(OVB$Data)
+```
+
+We can also create a contour plot of BATE over the bounded box.
+```{r, out.width="75%"}
+bate::cplotbias(OVB$Data)
 ```
