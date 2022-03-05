@@ -21,3 +21,22 @@ A data frame with three columns:
 \description{
 Computes delta* according to Oster (2019)
 }
+\examples{
+## Load data set
+data("NLSY_IQ")
+ 
+## Set age and race as factor variables
+NLSY_IQ$age <- factor(NLSY_IQ$age)
+NLSY_IQ$race <- factor(NLSY_IQ$race)
+   
+## Collect parameters from the short, intermediate and auxiliary regressions
+parameters <- collect_par(
+data = NLSY_IQ, outcome = "iq_std", 
+treatment = "BF_months", 
+control = c("age","sex","income","motherAge","motherEDU","mom_married","race"),
+other_regressors = c("sex","age"))
+
+## Oster's method: delta* (for Rmax=0.61)
+osterdelstar(parameters = parameters, Rmax=0.61)
+
+}
