@@ -21,5 +21,6 @@ Imports:
     latex2exp
 Suggests: 
     rmarkdown,
-    knitr
+    knitr,
+    dplyr
 VignetteBuilder: knitr

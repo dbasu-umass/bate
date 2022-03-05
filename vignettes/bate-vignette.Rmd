@@ -1,8 +1,8 @@
 ---
-title: "bate-vignette"
+title: "Bias-Adjusted Treatment Effect"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{bate-vignette}
+  %\VignetteIndexEntry{Bias-Adjusted Treatment Effect}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,47 +15,96 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(ggplot2)
+library(bate)
 ```
 
-# Bias-Adjusted Treatment Effect
+# Introduction
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of the `bate` package is to present some functions to compute quantiles of the empirical distribution of the bias-adjusted treatment effect (BATE) in a linear econometric model with omitted variable bias. To analyze such models, one can consider three regression models: (a) a short regression model where the outcome variable is regressed on the treatment variable, with or without additional controls; (b) an intermediate regression model where additional control variables are added to the short regression; (c) a hypothetical long regression model, where and index of the omitted variable(s) is added to the intermediate regressions. The selection on unobservables is captured by the parameter `delta`; and the R-squared in the hypothetical long regression is captured by the parameter `Rmax`. In addition, we need to consider an auxiliary regression where the treatment variable is regressed on all observed (and included) control variables.
+## Four Regressions
+The goal of the `bate` package is to present some functions to compute quantiles of the empirical distribution of the bias-adjusted treatment effect (BATE) in a linear econometric model with omitted variables. To analyze such models, a researcher should consider four regression models: (a) a short regression model where the outcome variable is regressed on the treatment variable, with or without additional controls; (b) an intermediate regression model where additional control variables are added to the short regression; (c) a hypothetical long regression model, where and index of the omitted variable(s) is added to the intermediate regressions; and (d) an auxiliary regression where the treatment variable is regressed on all observed (and included) control variables. 
 
-This package provides three functions to compute quantiles of the empirical distribution of the omitted bias and BATE, `ovbias()`, `ovbias_lm()` and `ovbias_par()`. These functions implement the same algorithm to compute the empirical distribution of the bias and BATE and only differ in how the user provides the paramaters of the short, intermediate and auxiliary regressions.
+## Two Important Parameters
+Two parameters capture the effect of the omitted variables in this set up. First, the relative strength of the unobservables, compared to the observable controls, in explaining variation in the _treatement variable_ is captured by the parameter `delta` (which is unbounded). Second, relative strength of the unobservables, compared to the observable controls, in explaining variation in the _outcome variable_ is captured by the parameter `Rmax` (which is bounded by the R-squared in the intermediate regression and 1). 
 
-To use the `bset1()` function, the user will need to run the short, intermediate and auxiliary regressions, collect relevant parameters and supply them to `bset`()`. The relevant parameters are:
+In a specific empirical analysis, a researcher will use domain knowledge about the specific issue under investigation to determine a plausible range for `delta`. This will be given by the interval on the real line lying between `deltalow` and `deltahigh` (the researcher will choose `deltalow` and `deltahigh`). The parameter `Rmax` is the R-squared in the hypothetical long regression. Hence, it lies between the R-squared in the intermediate regression (which we will denote as `Rlow`) and 1. Since it is unlikely that including all omitted variables will lead to an R-squared of 1, a researcher should use domain knowledge, once again, to choose an upper bound for `Rmax` that might be different from 1. This will be denoted by `Rhigh`.
 
-* beta0: treatment effect in short regression
-* R0: R-squared in short regression
-* betatilde: treatment effect in intermediate regression
-* Rtilde: R-squared in intermediate regression
-* taux: variance of residual in auxiliary regression
-* sigmay: standard deviation of the outcome variable
-* sigmax: standard deviation of the treatment variable.
+## The Algorithm
+How is the omitted variable bias and the BATE computed? The omitted variable bias is the real root of a cubic equation whose coefficients are functions of the parameters of the short, intermediate and auxiliary regressions and the values of `delta` and `Rmax`. In a specific empirical analysis, the parameters of the short, intermediate and auxiliary regressions are known. Hence, the coefficients of the cubic equation become functions of `delta` and `Rmax`, the two key parameters that the researcher chooses, using domain knowledge.
+
+Once the researchers has chosen `deltalow`, `deltahigh` and `Rhigh`, this defines a bounded box on the (`delta`, `Rmax`) plane defined by the Cartesian product of the interval [`deltalow`, `deltahigh`] and of the interval [`Rlow`, `Rhigh`]. The main functions in this package computes the root of the cubic equation on a sufficiently granular grid (the degree of granularity will be chosen by the user) covering the bounded box.  
+
+To compute the root of the cubic equation, the algorithm first evaluates the discriminant of the cubic equation on each point of the grid and partitions the box into two regions: (a) unique real root (URR) and NURR (no unique real root). There are three cases to consider.
+
+* **Case 1:** If all points of the bounded box are in URR, then the algorithm chooses the unique real root of the cubic at each point as the estimate of the omitted variable bias. 
+* **Case 2:** If some non-empty part of the box is in NURR, then the algorithm first computes roots on the URR region, and then, starting from the boundary points of URR/NURR, covers points on the NURR in small steps. At each step, the algorithm chooses the real root at a grid point in the NURR that is closest in absolute value to the real root at a previously selected grid point. Continuity of the roots of a polynomial with respect to its coefficients guarantees that the algorithm selects the correct real root at each point. 
+* **Case 3:** If the bounded box is completely contained in NURR, then the algorithm extends the size of the box in small steps in the `delta` direction to generate a nonempty intersection with a URR region. Once that is found, the algorithm implements the steps outlined in step 2. 
+
+The bias is then be used to compute the BATE, which is defined as the estimated treatment effect in the intermediate regression _minus_ the bias. This will generate an empirical distribution of the BATE. Asymptotic theory shows that the BATE converges in probability to the true treatment effect. Hence, the interval defined by the 2.5-th and 97.5-th quantiles of the empirical distribution of the BATE will contain the true treatment effect with 95 percent probability.
 
 
-To use the `bset2()` function, the user will need to run supply a data frame (with all relevant variables), name of the outcome variable, name of the treatment variable, and formulas for the short, intermediate and auxiliary regressions. The function will run the short, intermediate and auxiliary regressions, and collect the relevant parameters internally. 
+## The Main Functions
+This package provides three functions to compute quantiles of the empirical distribution of the omitted bias and BATE, `ovbias()`, `ovbias_lm()` and `ovbias_par()`. These functions implement the same algorithm to compute the empirical distribution of the bias and BATE and only differ in how the user provides the parameters of the short, intermediate and auxiliary regressions.
 
-In both functions, the relevant parameters are used to construct a cubic equation in the omitted variable bias. The cubic equation is solved on a NxN grid over a bounded box of the `(delta,Rmax)` plane, and the roots of the cubic are used to construct the bias-adjusted treatment effect. The bias-adjusted treatment effect is, by definition, the treatment effect estimated from the intermediate regression, `betatilde`, and the real root of the cubic equation.
+### ovbias() function
+To use the `ovbias()` function, the user will need to run first collect the parameters from the short, intermediate and auxiliary regressions, using the `collect_par()` function and then feed it into the `ovbias()` function, along with the following:
 
-The bounded box of the `(delta,Rmax)` plane is defined by the Cartesian products of two intervals: `[deltalow, deltahigh]`, and `[Rtilde, Rmax]`. We consider 4 different regimes: (1) low `delta`, low `Rmax`, where `deltalow < delta < 1` and `Rtilde < Rmax < 1.30 Rtilde`; (2) low `delta`, high `Rmax`, where `deltalow < delta < 1` and `Rtilde < Rmax < 2.47 Rtilde`; (3) high `delta`, low `Rmax`, where `1 < delta < deltahigh` and `Rtilde < Rmax < 1.30 Rtilde`; (4) high `delta`, high `Rmax`, where `1 < delta < deltahigh` and `Rtilde < Rmax < 2.47 Rtilde`.
+* deltalow: lower limit of `delta` (e.g. 0.01)
+* deltahigh: upper limit of `delta` (e.g. 0.99) 
+* Rhigh: upper limit of `Rmax` (e.g. 0.61)
+* e: step size in defining the grid (e.g. 0.01)
 
-For each regime, the bounded box is divided into two parts: (a) URR region, over which the cubic equation has a unique real root, and (b) NURR region, over which the cubic equation has three real roots. For the NURR region, the root whose distribution is closest to the distribution of the root over the URR region is chosen. If the URR region is empty, unique real roots of the cubic cannot be computed. Hence, the bias-adjusted treatment effect cannot be computed.
+In using the `collect_par()` function, the user will need to specify the following:
 
-The output of the `bset1()` function is a list of two elements. The first element is a data frame of the parameters about the three regressions supplied by the user; the second element of the list is a matrix containing the empirical distribution of the bias-adjusted treatment effect for the four regimes.
+* data: the name of the data frame (e.g. NLSY_IQ)
+* outcome: name of the outcome variable in double quotes (e.g. "iq_std") 
+* treatment: name of the treatment variable in double quotes (e.g. "BF_months")
+* control: names of additional regressors to include in the intermediate regression, supplied as a vector (e.g. c("age","sex","income","motherAge","motherEDU","mom_married","race"))
+* other_regressors: names of regressors in the short regression, other than the treatment variable, supplied as a vector (e.g. c("sex","age"))
 
-The output of the `bset2()` function is a list of two elements. The first element is a data frame of the parameters extracted from the three regressions; the second element of the list is a matrix containing the empirical distribution of the bias-adjusted treatment effect for the four regimes. 
+The output of the `ovbias()` function is a list of three elements. 
 
-For more details see Basu, D. (2021). "Bounding Sets for Treatment Effects with Proportional Selection". Economics Department Working Paper Series. 307. University of Massachusetts Amhers. URL: https://scholarworks.umass.edu/econ_workingpaper/307. For latest version of the paper use URL: https://drive.google.com/file/d/1v-IGh9_pKqAu7ALucNGTWJXBx0A0STxJ/view?usp=sharing
+* Data: A data frame containing the bias (`bias`) and bias-adjusted treatment effect (`bstar`) for each point on the grid.
+* bias_Distribution: Quantiles (2.5,5.0,50,95,97.5) of the empirical distribution of `bias`.
+* bstar_Distribution: Quantiles (2.5,5.0,50,95,97.5) of the empirical distribution of the BATE (`bstar`).
+
+### ovbias_par() function
+To use the `ovbias_par()` function, the user needs to specify the following:
+
+* data: the name of the data frame (e.g. NLSY_IQ)
+* outcome: name of the outcome variable in double quotes (e.g. "iq_std") 
+* treatment: name of the treatment variable in double quotes (e.g. "BF_months")
+* control: names of additional regressors to include in the intermediate regression, supplied as a vector (e.g. c("age","sex","income","motherAge","motherEDU","mom_married","race"))
+* other_regressors: names of regressors in the short regression, other than the treatment variable, supplied as a vector (e.g. c("sex","age"))
+* deltalow: lower limit of `delta` (e.g. 0.01)
+* deltahigh: upper limit of `delta` (e.g. 0.99) 
+* Rhigh: upper limit of `Rmax` (e.g. 0.61)
+* e: step size in defining the grid (e.g. 0.01)
+
+The output of the `ovbias_par()` function is identically same with the output of the `ovbias()` function.
+
+### ovbias_lm() function
+To use the `ovbias_lm()` function, the user needs to specify three `lm` objects that capture the short, intermediate and auxiliary regressions:
+
+* lm_shrt: lm object for the short regression
+* lm_int: lm object for the intermediate regression
+* lm_aux: lm object for the auxiliary regression
+* deltalow: lower limit of `delta` (e.g. 0.01)
+* deltahigh: upper limit of `delta` (e.g. 0.99) 
+* Rhigh: upper limit of `Rmax` (e.g. 0.61)
+* e: step size in defining the grid (e.g. 0.01)
+
+The output of the `ovbias_lm()` function is identically same with the output of the `ovbias()` function.
+
+
+For more details about the algorithm and its implementation see Basu, D. (2021). "Bounding Sets for Treatment Effects with Proportional Selection". Economics Department Working Paper Series. 307. University of Massachusetts Amhers. URL: https://scholarworks.umass.edu/econ_workingpaper/307. For latest version of the paper use URL: https://drive.google.com/file/d/1v-IGh9_pKqAu7ALucNGTWJXBx0A0STxJ/view?usp=sharing
 
 
 ## Installation
 
-You can install ovbias like so:
+You can install `bate` like so:
 
 ``` r
 # install.packages("devtools")
@@ -64,6 +113,134 @@ devtools::install_github("dbasu-umass/bate")
 ## Example
 
 ### Impact of Maternal Behavior on Child IQ
+Let us load the data set.
+```{r}
+data("NLSY_IQ")
+```
+The data set has two `.RData` objects: `NLSY_IQ` (to be used for the analysis of maternal behavior on child IQ) and `NLSY_BW` (to be used for the analysis of maternal behavior on child birthweight). 
+
+Let us see the names of the variables in the `NLSY_IQ` data set.
+```{r}
+names(NLSY_IQ)
+```
+Let us set `age` and `race` as factor variables
+```{r}
+NLSY_IQ$age <- factor(NLSY_IQ$age)
+NLSY_IQ$race <- factor(NLSY_IQ$race)
+```
+Let us use the `collect_par()` function to collect parameters from the short, intermediate and auxiliary regressions.
+```{r}
+parameters <- bate::collect_par(data=NLSY_IQ,
+            outcome="iq_std",
+            treatment="BF_months",
+            control=c("age","sex","income","motherAge","motherEDU","mom_married","race"),
+            other_regressors = c("sex","age"))
+```
+Let us see the parameters.
+```{r}
+(parameters)
+```
+Let us choose the dimensions of the bounded box over which we want the bias computation to be carried out.
+```{r}
+Rhigh <- 0.61
+deltalow <- 0.01
+deltahigh <- 0.99
+e <- 0.01
+```
+Now we can use the `ovbias()` function to compute the empirical distribution of omitted variable bias and BATE. Note that this step make take a few minutes, depending on the dimensions of the box and the size of `e`, to complete itself.
+```{r}
+OVB <- bate::ovbias(
+  parameters = parameters,
+  deltalow=deltalow, 
+  deltahigh=deltahigh,
+  Rhigh=Rhigh, 
+  e=e)
+```
+We can now see the quantiles of omitted variable bias 
+```{r}
+(OVB$bias_Distribution)
+```
+and quantiles of the BATE (computed over the bounded box we chose above).
+```{r}
+(OVB$bstar_Distribution)
+```
+We can create the histogram and density plot of the omitted variable bias.
+```{r}
+dplotbate(OVB$Data)
+```
+
+We can also create a contour plot of BATE over the bounded box.
+```{r}
+cplotbias(OVB$Data)
+```
+
+We could have carried out the same analysis using the `ovbias_par()` function.
+```{r}
+OVB.par <- ovbias_par(
+  data=NLSY_IQ,
+  outcome="iq_std",
+  treatment="BF_months",
+  control=c("age","sex","income","motherAge","motherEDU","mom_married","race"),
+  other_regressors = c("sex","age"),
+  deltalow=deltalow, 
+  deltahigh=deltahigh,
+  Rhigh=Rhigh, 
+  e=e)
+```
+We can now see the quantiles of omitted variable bias 
+```{r}
+(OVB.par$bias_Distribution)
+```
+and quantiles of the BATE (computed over the bounded box we chose above).
+```{r}
+(OVB.par$bstar_Distribution)
+```
+
+We could have also carried out the same analysis using the `ovbias_lm()` function. To use this function, we need to estimate the short regression
+```{r}
+reg_col1 <- lm(
+  iq_std ~ BF_months + factor(age) + sex,
+  data = NLSY_IQ
+)
+```
+and the intermediate regression
+```{r}
+reg_col2 <- lm(
+  iq_std ~ BF_months + factor(age) + sex +
+    income + motherAge + motherEDU + mom_married +
+    factor(race),
+  data = NLSY_IQ
+)
+```
+and the auxiliary regression
+```{r}
+reg_aux <- lm(
+  BF_months ~ factor(age) + sex +
+    income + motherAge + motherEDU + mom_married +
+    factor(race),
+  data = NLSY_IQ
+)
+```
+and then call the `ovbias_lm()` function
+```{r}
+OVB.lm <- ovbias_lm(
+  lm_shrt = reg_col1,
+  lm_int = reg_col2,
+  lm_aux = reg_aux,
+  deltalow=deltalow, 
+  deltahigh=deltahigh,
+  Rhigh=Rhigh, 
+  e=e)
+```
+We can now see the quantiles of omitted variable bias 
+```{r}
+(OVB.lm$bias_Distribution)
+```
+and quantiles of the BATE (computed over the bounded box we chose above).
+```{r}
+(OVB.lm$bstar_Distribution)
+```
+
 
 ### Impact of Maternal Behavior on Child Birthweight
 
