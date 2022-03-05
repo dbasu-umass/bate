@@ -18,6 +18,28 @@
 #' 
 #' @export
 #'
+#' @examples 
+#' ## Load data set
+#' data("NLSY_IQ")
+#'  
+#' ## Set parameters for bounded box
+#' Rhigh <- 0.61
+#' deltalow <- 0.01
+#' deltahigh <- 0.99
+#' e <- 0.01
+#' 
+#' ## Compute bias and bias-adjusted treatment effect
+#' OVB_par <- ovbias_par(data=NLSY_IQ,
+#' outcome="iq_std",treatment="BF_months", 
+#' control=c("age","sex","income","motherAge","motherEDU","mom_married","race"), 
+#' other_regressors = c("sex","age"), deltalow=deltalow, 
+#' deltahigh=deltahigh, Rhigh=Rhigh, e=e)
+#'
+#' ## Default quantiles of bias
+#' OVB_par$bias_Distribution
+#' 
+#' # Default quantiles of bias-adjusted treatment effect
+#' OVB_par$bstar_Distribution
 #' 
 ovbias_par <- function(data,outcome,treatment,control,other_regressors=NULL,deltalow,deltahigh,Rhigh,e){
   
