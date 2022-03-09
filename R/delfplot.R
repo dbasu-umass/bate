@@ -73,8 +73,9 @@ delfplot <- function(parameters){
       labs(
         y=TeX("$\\delta$"),
         x=TeX("$R_{max}$"),
-        title=TeX("$\\delta$ = f($R_{max}$), $\\beta = 0"),
-        subtitle=TeX("Dashed red vertical line: R**= (value of Rmax) when delta=1")
+        title=TeX("Graph of $\\delta$ = f($R_{max}$), $\\beta = 0"),
+        subtitle = paste("Dashed red vertical line (Rmax when delta=1) at", round(Rstar, digits = 2))
+        #subtitle=TeX("Dashed red vertical line: value of Rmax when $\\delta$=1")
       ) +
       geom_hline(yintercept = 1, linetype="dashed") +
       geom_vline(xintercept = Rstar, linetype="dashed", color="red") +
