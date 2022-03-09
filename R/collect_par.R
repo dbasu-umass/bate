@@ -4,7 +4,7 @@
 #' @param outcome The name of the outcome variable (must be present in the data frame).
 #' @param treatment The name of the treatment variable (must be present in the data frame).
 #' @param control Control variables to be added to the intermediate regression.
-#' @param other_regressors Control variables to be added in the short regression (default is NULL).
+#' @param other_regressors Subset of control variables to be added in the short regression (default is NULL).
 #'
 #' @return A data frame with the following columns:
 #' \item{beta0}{Treatment effect in the short regression}

@@ -4,7 +4,7 @@
 #' @param outcome Outcome variable.
 #' @param treatment Treatment variable.
 #' @param control Control variables to add in the intermediate regression.
-#' @param other_regressors Control variables to add in the short regression (default is NULL). 
+#' @param other_regressors Subset of control variables to add in the short regression (default is NULL). 
 #' @param deltalow The lower limit of delta.
 #' @param deltahigh The upper limit of delta.
 #' @param Rhigh The upper limit of Rmax.
