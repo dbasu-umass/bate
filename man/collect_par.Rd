@@ -15,7 +15,7 @@ collect_par(data, outcome, treatment, control, other_regressors = NULL)
 
 \item{control}{Control variables to be added to the intermediate regression.}
 
-\item{other_regressors}{Control variables to be added in the short regression (default is NULL).}
+\item{other_regressors}{Subset of control variables to be added in the short regression (default is NULL).}
 }
 \value{
 A data frame with the following columns:

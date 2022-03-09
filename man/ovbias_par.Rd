@@ -25,7 +25,7 @@ ovbias_par(
 
 \item{control}{Control variables to add in the intermediate regression.}
 
-\item{other_regressors}{Control variables to add in the short regression (default is NULL).}
+\item{other_regressors}{Subset of control variables to add in the short regression (default is NULL).}
 
 \item{deltalow}{The lower limit of delta.}
 
