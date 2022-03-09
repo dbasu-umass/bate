@@ -15,45 +15,99 @@ analyze such models, a researcher should consider four regression
 models: (a) a short regression model where the outcome variable is
 regressed on the treatment variable, with or without additional
 controls; (b) an intermediate regression model where additional control
-variables are added to the short regression; (c) a hypothetical long
-regression model, where and index of the omitted variable(s) is added to
+variables are added to the short regression; (c) a *hypothetical* long
+regression model, where an index of the omitted variable(s) is added to
 the intermediate regressions; and (d) an auxiliary regression where the
 treatment variable is regressed on all observed (and included) control
 variables.
 
+As an example, suppose a researcher has estimated the following model,
+*y* = *α* + *β*<sub>1</sub>*x* + *γ*<sub>1</sub>*w*<sub>1</sub> + *γ*<sub>2</sub>*w*<sub>2</sub> + *ε*
+, and is interested in understanding the impact of some omitted
+variables on the results. In this case:
+
+-   outcome variable: *y*
+-   treatment variable: *x*
+-   short regression: *y* regressed on *x*;
+-   intermediate regression: *y* regressed on
+    *x*, *w*<sub>1</sub>, *w*<sub>2</sub>;
+-   auxiliary regression: *x* regressed on
+    *w*<sub>1</sub>, *w*<sub>2</sub>;
+-   hypothetical long regression: *y* regressed on
+    *x*, *w*<sub>1</sub>, *w*<sub>2</sub> and the omitted variables;
+
+The treatment effect is *β*<sub>1</sub>, but in the presence of omitted
+variables, this will be estimated with a bias. The functions in this
+package will allow a researcher to create quantiles of the empirical
+distribution of the BATE, i.e. the treatment effect once we have
+adjusted for the effect of omitted variable bias.
+
+The researcher will need to supply the data set (as a data frame), the
+name of the outcome variable, the name of the treatment variable, and
+the names of the additional regressors in the intermediate regression.
+The functions in this package will then compute the quantiles of the
+empirical distribution of BATE.
+
 ## Two Important Parameters
 
 Two parameters capture the effect of the omitted variables in this set
-up. First, the relative strength of the unobservables, compared to the
-observable controls, in explaining variation in the *treatement
-variable* is captured by the parameter `delta` (which is unbounded).
-Second, relative strength of the unobservables, compared to the
-observable controls, in explaining variation in the *outcome variable*
-is captured by the parameter `Rmax` (which is bounded by the R-squared
-in the intermediate regression and 1).
+up.
+
+The first parameter is *δ*. This captures the relative strength of the
+unobservables, compared to the observable controls, in explaining
+variation in the *treatement variable*. In the functions below this is
+denoted as the parameter `delta`. This parameter is a real number and
+can take any value on the real line, i.e. it is unbounded. Hence, in any
+specific analysis, the researcher will have to choose a lower and an
+upper bound for `delta`. For instance, if in any empirical analysis, the
+researcher believes, based on knowledge of the specific problem being
+investigated, that the unobservables are *less* important than the
+observed controls in explaining the variation in the *treatment
+variable*, then she could choose `delta` to lie between 0 and 1. On the
+other hand, if she believes that the unobservables are *more* important
+than the observed controls in explaining the variation in the *treatment
+variable*, then she should choose `delta` to lie between 1 and 2 or 1
+and 5.
+
+The second parameter is *R*<sub>*m**a**x*</sub>. This captures the
+relative strength of the unobservables, compared to the observable
+controls, in explaining variation in the *outcome variable*. In the
+functions below, this is captured by the parameter `Rmax`. The parameter
+`Rmax` is the R-squared in the hypothetical long regression. Hence, it
+lies between the R-squared in the intermediate regression (*R̃*) and 1.
+Since the lower bound of `Rmax` is given by *R̃*, in any specific
+analysis, the researcher will only have to choose an upper bound for
+`Rmax`.
 
 In a specific empirical analysis, a researcher will use domain knowledge
 about the specific issue under investigation to determine a plausible
-range for `delta`. This will be given by the interval on the real line
-lying between `deltalow` and `deltahigh` (the researcher will choose
-`deltalow` and `deltahigh`). The parameter `Rmax` is the R-squared in
-the hypothetical long regression. Hence, it lies between the R-squared
-in the intermediate regression (which we will denote as `Rlow`) and 1.
-Since it is unlikely that including all omitted variables will lead to
-an R-squared of 1, a researcher should use domain knowledge, once again,
-to choose an upper bound for `Rmax` that might be different from 1. This
-will be denoted by `Rhigh`.
+range for `delta` (e.g. 0.01 ≤ *δ* ≤ 0.99). This will be given by the
+interval on the real line lying between `deltalow` and `deltahigh` (the
+researcher will choose `deltalow` and `deltahigh`). Using the example in
+this paragraph, `deltalow=0.01` and `deltahigh=0.99`.
+
+In a similar manner, a researcher will use domain knowledge about the
+specific issue under investigation to determine `Rmax`. Here, it will be
+important to keep in mind that `Rmax` is the R-squared in the
+hypothetical long regression. Now, it is unlikely that including all
+omitted variables and thereby estimating the hypothetical long
+regression will give an R-squared of 1. This is because, even after all
+the regressors have been included, some variation of the outcome might
+be plausibly explained by a stochastic element. Hence, `Rmax` will most
+likely be different from, and less than, 1. This will be denoted by
+`Rhigh` (e.g. `Rmax=0.61`).
 
 ## The Algorithm
 
-How is the omitted variable bias and the BATE computed? The omitted
-variable bias is the real root of a cubic equation whose coefficients
-are functions of the parameters of the short, intermediate and auxiliary
-regressions and the values of `delta` and `Rmax`. In a specific
-empirical analysis, the parameters of the short, intermediate and
-auxiliary regressions are known. Hence, the coefficients of the cubic
-equation become functions of `delta` and `Rmax`, the two key parameters
-that the researcher chooses, using domain knowledge.
+How is the omitted variable bias and the BATE computed? The key result
+that is used to compute the BATE is this: the omitted variable bias is
+the real root of a *cubic equation* whose coefficients are functions of
+the parameters of the short, intermediate and auxiliary regressions and
+the values of `delta` and `Rmax`. In a specific empirical analysis, the
+parameters of the short, intermediate and auxiliary regressions are
+known. Hence, the coefficients of the cubic equation become functions of
+`delta` and `Rmax`, the two key parameters that the researcher chooses,
+using domain knowledge.
 
 Once the researchers has chosen `deltalow`, `deltahigh` and `Rhigh`,
 this defines a bounded box on the (`delta`, `Rmax`) plane defined by the
@@ -99,10 +153,11 @@ An useful function to collect relevant parameters from the short,
 intermediate and auxiliary regressions is:
 
 -   `collect_par()`: collects parameters from the short, intermediate
-    and auxiliary regressions as a *data frame* (user provides data
-    frame, name of outcome variable, name of treatment variable, names
-    of control variables in the short regression, if relevant, and names
-    of additional variables in the intermediate regression).
+    and auxiliary regressions; (user provides name of the data set, name
+    of outcome variable, name of treatment variable, names of control
+    variables in the short regression, if relevant, and names of
+    additional variables in the intermediate regression); the output of
+    this function is a data frame.
 
 Users can use the output from `collect_par()` to construct an area plot
 of the bounded box using:
@@ -110,37 +165,44 @@ of the bounded box using:
 -   `urrplot()`: creates a colored area plot of the bounded box chosen
     by the user demarcating the area where the cubic equation has unique
     real root (URR) from the area where the cubic equation has three
-    real roots (NURR).
+    real roots (NURR); the output is a plot object.
 
 The main functions in this package that are available for users to
 compute empirical distributions of omitted variable bias and BATE are:
 
 -   `ovbias()`: computes the empirical distribution of omitted variable
     bias and BATE (takes the output from `collect_par()` as one of the
-    inputs);
+    inputs); the output of this function is a list;
 -   `ovbias_par()`: computes the empirical distribution of omitted
     variable bias and BATE (takes the data frame, name of outcome
     variable, name of treatment variable, names of control variables in
     the short regression, if relevant, and names of additional variables
-    in the intermediate regression, as inputs);
+    in the intermediate regression, as inputs); the output of this
+    function is a list;
 -   `ovbias_lm()`: computes the empirical distribution of omitted
     variable bias and BATE (takes three `lm` objects corresponding to
-    the short, intermediate and auxiliary regressions as inputs).
+    the short, intermediate and auxiliary regressions as inputs); the
+    output of this function is a list.
 
 Using the output from `ovbias()`, `ovbias_par()` or `ovbias_lm()`, users
 can construct various plots:
 
--   `cplotbias()`: contour plot of the bias over the bounded box;
--   `dplotbate()`: histogram and density plot of BATE;
+-   `cplotbias()`: contour plot of the bias over the bounded box; the
+    output of this function is a plot object;
+-   `dplotbate()`: histogram and density plot of BATE; the output of
+    this function is a plot object;
 
 The methodology proposed in Oster (2019) is implemented via these
 functions:
 
--   `osterbds()`: identified sets according to Oster’s methodology;
+-   `osterbds()`: identified sets according to Oster’s methodology; the
+    output of this function is a data frame;
 -   `osterdelstar()`: the value of *δ*<sup>\*</sup> for a chosen value
-    of *R*<sub>*m**a**x*</sub>;
+    of *R*<sub>*m**a**x*</sub>; the output of this function is a data
+    frame;
 -   `delfplot()`: a plot of the graph of the function,
-    *δ* = *f*(*R*<sub>*m**a**x*</sub>).
+    *δ* = *f*(*R*<sub>*m**a**x*</sub>); the output of this function is a
+    plot object.
 
 ## Installation
 
@@ -186,8 +248,17 @@ NLSY_IQ$race <- factor(NLSY_IQ$race)
 
 ### Using ovbias()
 
+Let us work with the following example:
+
+-   short regression: `iq_std ~ BF_months + sex + age`
+-   intermediate regression:
+    `iq_std ~ BF_months + sex + age + income + motherAge + motherEDU + mom_married + race`.
+
 Let us use the `collect_par()` function to collect parameters from the
-short, intermediate and auxiliary regressions.
+short, intermediate and auxiliary regressions. Note how
+`other_parameters` is a subset of `control`. The researcher needs to
+make sure that `control` includes the names of *all* regressors in the
+intermediate regression, other than the treatment variable.
 
 ``` r
 parameters <- bate::collect_par(data=NLSY_IQ,
@@ -209,9 +280,13 @@ Let us choose the dimensions of the bounded box over which we want the
 bias computation to be carried out.
 
 ``` r
+# Upper bound of Rmax
 Rhigh <- 0.61
+# Lower bound of delta
 deltalow <- 0.01
+# Upper bound of delta
 deltahigh <- 0.99
+# step size to construct grid
 e <- 0.01
 ```
 
