@@ -91,11 +91,11 @@ urrplot <- function(parameters, deltalow, deltahigh, Rlow, Rhigh, e){
     labs(
       x=TeX("$\\delta$"),
       y=TeX("$R_{max}$"),
-      title="Area of the grid within the URR and NURR regions",
+      title="URR and NURR regions",
       subtitle=paste0(sum(consol$D),
                       " (",
                       nrow(consol) - sum(consol$D),
-                      ") points in the URR (NURR) region")
+                      ") points in URR (NURR)")
     )
   # Return plot
   return(p)
