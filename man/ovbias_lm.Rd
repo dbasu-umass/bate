@@ -58,7 +58,7 @@ Rlow <- summary(reg_i)$r.squared
 Rhigh <- 0.61
 deltalow <- 0.01
 deltahigh <- 0.99
-e <- 0.01
+e <- 0.03
 
 ## Compute bias and bias-adjusted treatment effect
 ovb_lm <- ovbias_lm(lm_shrt = reg_s,lm_int = reg_i, 

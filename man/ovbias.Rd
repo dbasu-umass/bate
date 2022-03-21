@@ -47,7 +47,7 @@ Rlow <- parameters$Rtilde
 Rhigh <- 0.61
 deltalow <- 0.01
 deltahigh <- 0.99
-e <- 0.01
+e <- 0.03
 
 ## Compute bias and bias-adjusted treatment effect
 OVB <- ovbias(
