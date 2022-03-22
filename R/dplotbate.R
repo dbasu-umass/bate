@@ -44,8 +44,9 @@
 #' Rhigh <- 0.61
 #' deltalow <- 0.01
 #' deltahigh <- 0.99
-#' e <- 0.03
+#' e <- 0.01
 #' 
+#' \dontrun{
 #' ## Compute bias and bias-adjusted treatment effect
 #' OVB <- ovbias(
 #' parameters = parameters, 
@@ -56,6 +57,7 @@
 #' ## Histogram and density Plot of bstar distribution
 #' p3 <- dplotbate(OVB$Data)
 #' print(p3)
+#' }
 #' 
 dplotbate <- function(data){
   

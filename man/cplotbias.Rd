@@ -35,8 +35,9 @@ Rlow <- parameters$Rtilde
 Rhigh <- 0.61
 deltalow <- 0.01
 deltahigh <- 0.99
-e <- 0.03
+e <- 0.01
 
+\dontrun{
 ## Compute bias and bias-adjusted treatment effect
 OVB <- ovbias(
 parameters = parameters, 
@@ -47,5 +48,6 @@ e=e)
 ## Contour Plot of bias over the bounded box
 p2 <- cplotbias(OVB$Data)
 print(p2)
+}
 
 }
