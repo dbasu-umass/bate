@@ -28,3 +28,4 @@ Suggests:
     rmarkdown,
     knitr
 VignetteBuilder: knitr
+URL: https://github.com/dbasu-umass/bate/, https://rpubs.com/dbasu/bate/
