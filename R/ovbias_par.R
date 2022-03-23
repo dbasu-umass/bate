@@ -28,6 +28,7 @@
 #' deltahigh <- 0.99
 #' e <- 0.01
 #' 
+#' \dontrun{
 #' ## Compute bias and bias-adjusted treatment effect
 #' OVB_par <- ovbias_par(data=NLSY_IQ,
 #' outcome="iq_std",treatment="BF_months", 
@@ -40,6 +41,7 @@
 #' 
 #' # Default quantiles of bias-adjusted treatment effect
 #' OVB_par$bstar_Distribution
+#' }
 #' 
 ovbias_par <- function(data,outcome,treatment,control,other_regressors=NULL,deltalow,deltahigh,Rhigh,e){
   

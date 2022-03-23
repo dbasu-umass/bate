@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 ^bate\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^README\.Rmd$
+=======
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^LICENSE\.md$
+^cran-comments\.md$
+>>>>>>> 69aca92373ff12575070bad85ddcb9424c1dfb07

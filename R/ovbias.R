@@ -36,6 +36,7 @@
 #' deltahigh <- 0.99
 #' e <- 0.01
 #' 
+#' \dontrun{
 #' ## Compute bias and bias-adjusted treatment effect
 #' OVB <- ovbias(
 #' parameters = parameters, 
@@ -54,6 +55,7 @@
 #' 
 #' ## Chosen quantiles of bias-adjusted treatment effect
 #' quantile(OVB$Data$bstar, c(0.01,0.05,0.1,0.9,0.95,0.975))
+#' }
 #' 
 ovbias <- function(parameters,deltalow,deltahigh,Rhigh,e){
   

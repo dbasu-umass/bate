@@ -45,6 +45,7 @@
 #' deltahigh <- 0.99
 #' e <- 0.01
 #' 
+#' \dontrun{
 #' ## Compute bias and bias-adjusted treatment effect
 #' ovb_lm <- ovbias_lm(lm_shrt = reg_s,lm_int = reg_i, 
 #' lm_aux = reg_a, deltalow=deltalow, deltahigh=deltahigh, 
@@ -55,7 +56,7 @@
 #' 
 #' # Default quantiles of bias-adjusted treatment effect
 #' ovb_lm$bstar_Distribution
-#' 
+#' }
 #' 
 ovbias_lm <- function(lm_shrt,lm_int,lm_aux,deltalow,deltahigh,Rhigh,e){
   

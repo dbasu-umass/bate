@@ -38,6 +38,7 @@
 #' deltahigh <- 0.99
 #' e <- 0.01
 #' 
+#' \dontrun{
 #' ## Compute bias and bias-adjusted treatment effect
 #' OVB <- ovbias(
 #' parameters = parameters, 
@@ -48,6 +49,7 @@
 #' ## Contour Plot of bias over the bounded box
 #' p2 <- cplotbias(OVB$Data)
 #' print(p2)
+#' }
 #' 
 cplotbias <- function(data){
   # data frame

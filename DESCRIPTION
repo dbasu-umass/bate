@@ -1,9 +1,9 @@
 Package: bate
 Title: Computes Bias-Adjusted Treatment Effect
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: c(
-    person("Deepankar", "Basu", , "dbasu@umass.edu", role = c("aut")),
-    person("Evan", "Wasner", , "ewasner@umass.edu", role = c("aut", "cre")))
+    person("Deepankar", "Basu", , "dbasu@umass.edu", role = c("aut", "cre")),
+    person("Evan", "Wasner", , "ewasner@umass.edu", role = c("aut")))
 Description: A package for computing bounds for the treatment effect 
     after adjusting for the presence of omitted variables in linear  
     econometric models. You supply the data, identify the outcome and 
@@ -28,3 +28,4 @@ Suggests:
     rmarkdown,
     knitr
 VignetteBuilder: knitr
+URL: https://github.com/dbasu-umass/bate/, https://rpubs.com/dbasu/bate/
