@@ -134,7 +134,7 @@ Using the output from `ovbias()`, `ovbias_par()` or `ovbias_lm()`, users can con
 * `cplotbias()`: contour plot of the bias over the bounded box; the output of this function is a plot object;
 * `dplotbate()`: histogram and density plot of BATE; the output of this function is a plot object;
 
-The methodology proposed in Basu (2021) is slightly different from, and a critique of, Oster (2019). Hence, it might be useful to compare the results of the two methodologies. The methodology proposed in Oster (2019) is implemented via these functions:
+The methodology proposed in Basu (2022) is slightly different from, and a critique of, Oster (2019). Hence, it might be useful to compare the results of the two methodologies. The methodology proposed in Oster (2019) is implemented via these functions:
 
 * `osterbds()`: identified sets according to Oster's methodology; the output of this function is a data frame;
 * `osterdelstar()`: the value of $\delta^*$ for a chosen value of $R_{max}$; the output of this function is a data frame;
@@ -142,14 +142,6 @@ The methodology proposed in Basu (2021) is slightly different from, and a critiq
 
 
 
-## Installation
-
-You can install `bate` like so:
-
-``` r
-# install.packages("devtools")
-devtools::install_github("dbasu-umass/bate")
-```
 ## Example: Impact of Maternal Behavior on Child IQ
 
 ### Setting Up
@@ -250,7 +242,7 @@ Let us compute the identified sets.
 ```{r}
 bate::osterbds(parameters = parameters, Rmax=0.61)
 ```
-The output from the above function contains three things: the value of the discriminant of the quadratic equation that is solved to compute the identified sets, and the _two identified sets_. The identified set is the interval formed by $\tilde{\beta}$ (treatment effect in the intermediate regression) and $\beta^*=\tilde{\beta}-\nu$, where $\nu$ is a root of a quadratic equation. It has been shown in Basu (2021) that the discriminant of this quadratic will always be positive. Hence, there will be _two_ real roots of the quadratic. Hence, there will be two identified sets, instead of a unique identified set. That is why we see two identified sets in the result above.
+The output from the above function contains three things: the value of the discriminant of the quadratic equation that is solved to compute the identified sets, and the _two identified sets_. The identified set is the interval formed by $\tilde{\beta}$ (treatment effect in the intermediate regression) and $\beta^*=\tilde{\beta}-\nu$, where $\nu$ is a root of a quadratic equation. It has been shown in Basu (2022) that the discriminant of this quadratic will always be positive. Hence, there will be _two_ real roots of the quadratic. Hence, there will be two identified sets, instead of a unique identified set. That is why we see two identified sets in the result above.
 
 Let us also compute $\delta^*$, the value of $\delta$ that is associated with a given value of `Rmax` (in this case `Rmax=0.61`) such that the treatment effect is zero. 
 ```{r}
@@ -258,7 +250,7 @@ bate::osterdelstar(parameters = parameters, Rmax=0.61)
 ```
 In addition to the value of $\delta^*$, the output has two other things: 
 
-* `discontinuity`: this tells us whether the interval formed by $\tilde{R}$ and $1$ contains a point of discontinuity; if it is `FALSE`, then the interval does not contain the point of discontinuity; if it is `TRUE`, then the interval contains the point of discontinuity and the analysis of Oster (2019) should be avoided; for more details see Basu (2021).
+* `discontinuity`: this tells us whether the interval formed by $\tilde{R}$ and $1$ contains a point of discontinuity; if it is `FALSE`, then the interval does not contain the point of discontinuity; if it is `TRUE`, then the interval contains the point of discontinuity and the analysis of Oster (2019) should be avoided; for more details see Basu (2022).
 
 * `slope`: this gives the slope of the graph of the function $\delta=f(R_{max})$; the slope can be either `positive` or `negative` and helps in interpreting the meaning of $\delta^*$.
 
@@ -341,6 +333,6 @@ and quantiles of the BATE (computed over the bounded box we chose above).
 
 ## References
 
-* Basu, D. (2021). "Bounding Sets for Treatment Effects with Proportional Selection." Economics Department Working Paper Series. 307. University of Massachusetts Amherst. URL: https://scholarworks.umass.edu/econ_workingpaper/307. For the latest version of the paper use URL: https://drive.google.com/file/d/1v-IGh9_pKqAu7ALucNGTWJXBx0A0STxJ/view?usp=sharing
+* Basu, D. (2022). "Bounds for Bias-Adjusted Treatment Effect in Linear Econometric Models." 
 
 * Oster, E. (2019). "Unobservable Selection and Coefficient Stability: Theory and Evidence." _Journal of Business & Economic Statistics_, 37:2, 187-204, DOI:10.1080/07350015.2016.1227711
