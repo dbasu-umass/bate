@@ -23,7 +23,8 @@ Imports:
     magrittr,
     tidyselect,
     purrr,
-    latex2exp
+    latex2exp,
+    vtable
 Suggests: 
     rmarkdown,
     knitr
