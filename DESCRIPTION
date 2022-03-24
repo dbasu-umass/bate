@@ -4,9 +4,10 @@ Version: 0.1.0
 Authors@R: c(
     person("Deepankar", "Basu", , "dbasu@umass.edu", role = c("aut", "cre")),
     person("Evan", "Wasner", , "ewasner@umass.edu", role = c("aut")))
-Description: A package for computing bounds for the treatment effect 
+Description: Compute bounds for the treatment effect 
     after adjusting for the presence of omitted variables in linear  
-    econometric models. You supply the data, identify the outcome and 
+    econometric models, according to the method of Basu (2022) <https://arxiv.org/abs/2203.12431>. 
+    You supply the data, identify the outcome and 
     treatment variables and additional regressors. The main functions
     will compute bounds for the bias-adjusted treatment effect. Many
     plot functions allow easy visualization of results.

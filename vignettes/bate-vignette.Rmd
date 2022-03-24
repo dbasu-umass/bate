@@ -14,9 +14,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(bate)
-```
 
 # Introduction
 
@@ -144,6 +141,11 @@ The methodology proposed in Basu (2022) is slightly different from, and a critiq
 
 ## Example: Impact of Maternal Behavior on Child IQ
 
+Install the package from CRAN and then load it.
+```{r setup}
+library(bate)
+```
+
 ### Setting Up
 Let us load the data set.
 ```{r}
@@ -151,7 +153,7 @@ data("NLSY_IQ")
 ```
 The data set has two `.RData` objects: `NLSY_IQ` (to be used for the analysis of maternal behavior on child IQ) and `NLSY_BW` (to be used for the analysis of maternal behavior on child birthweight). 
 
-Let us see the names of the variables in the `NLSY_IQ` data set.
+In this example, we will analyse the effect of maternal behavior on child IQ scores. Let us start out by seeing the names of the variables in the `NLSY_IQ` data set.
 ```{r}
 names(NLSY_IQ)
 ```
@@ -160,20 +162,20 @@ For use in the example below, let us set `age` and `race` as factor variables
 NLSY_IQ$age <- factor(NLSY_IQ$age)
 NLSY_IQ$race <- factor(NLSY_IQ$race)
 ```
-Let us see the summary statistics of the variables.
+Let us use the `vtable` package to see the summary statistics of the variables in our data set.
 ```{r}
 library(vtable)
-st(NLSY_IQ)
+vtable::st(NLSY_IQ)
 ```
 
 ### Setting Up the Analysis
-We will work with an example where the effect of _months of breastfeeding_ on _children's IQ score_ is analyzed. Thus, here, the outcome variable is a child's IQ score and the treatment variable is the months of breastfeeding by the mother. Additional control variables are: sex and age of the child, and the mother's age, the mother's years of formal education, whether the mother is married and the race of the mother. For further details of this example, see section 4.2 in Oster (2019). For ease of reference, let us note that we are working with the model reported in the first row of Table 3 in Oster (2019).
+We will work with an example where the effect of _months of breastfeeding_ on _children's IQ score_ is analyzed. Thus, here, the outcome variable is a child's IQ score and the treatment variable is the months of breastfeeding by the mother. Additional control variables are: sex and age of the child, and the mother's age, the mother's years of formal education, whether the mother is married and the race of the mother. For further details of this example, see section 4.2 in Oster (2019). For ease of reference, let us note that we are working with the model reported in the first row of Table 3 in Oster (2019) and the first block of 4 rows in Table 2 in Basu (2022).
 
 Using the names of variables in the data set, we have:
 * short regression: `iq_std ~ BF_months + sex + age`
 * intermediate regression: `iq_std ~ BF_months + sex + age + income + motherAge + motherEDU + mom_married + race`.
 
-Let us use the `collect_par()` function to collect parameters from the short, intermediate and auxiliary regressions. It is important to note that `other_parameters` is a subset of `control`. If the researcher fails to ensure this, the `collect_par()` function will throw an error. 
+Let us use the `collect_par()` function to collect parameters from the short, intermediate and auxiliary regressions. It is important to note that `other_parameters` option in this function should refer to a subset of `control`. If the researcher fails to ensure this, the `collect_par()` function will throw an error. 
 ```{r}
 parameters <- bate::collect_par(data=NLSY_IQ,
             outcome="iq_std",
@@ -196,7 +198,7 @@ deltahigh <- 0.99
 # step size to construct grid
 e <- 0.01
 ```
-Note that while setting the dimensions of the bounded box, we have not chosen a value for `Rlow`. This is because `Rlow` is chosen by default to be equal to `parameters$Rtilde` (the R-squared in the intermediate regression).
+Note that while setting the dimensions of the bounded box, we have not chosen a value for `Rlow` (lower bound for $R_{max}$). This is because `Rlow` is chosen by default to be equal to `parameters$Rtilde` (the R-squared in the intermediate regression).
 
 Let us see the division of the bounded box into the URR (unique real root) and NURR (nonunique real root) regions using the `urrplot()` function.
 ```{r, fig.width=6, fig.height=4}
@@ -207,7 +209,7 @@ bate::urrplot(parameters = parameters, deltalow = deltalow,
 
 
 ### Using ovbias()
-Now we can use the `ovbias()` function to compute the empirical distribution of omitted variable bias and BATE. Note that this step make take a few minutes, depending on the dimensions of the box and the size of `e`, to complete itself.
+Now we can use the `ovbias()` function to compute the empirical distribution of omitted variable bias and BATE. Note that this step make take a few minutes, depending on the dimensions of the box and the size of `e`, to complete itself. As the function works, it will print a message in the console informing the user of the progress of the computation. Here, I have suppressed these messages.
 ```{r, message=FALSE}
 OVB <- bate::ovbias(
   parameters = parameters,
@@ -216,7 +218,7 @@ OVB <- bate::ovbias(
   Rhigh=Rhigh, 
   e=e)
 ```
-We can now see the quantiles of omitted variable bias 
+Once the computation is completed, we can see the quantiles of omitted variable bias 
 ```{r}
 (OVB$bias_Distribution)
 ```
@@ -242,7 +244,9 @@ Let us compute the identified sets.
 ```{r}
 bate::osterbds(parameters = parameters, Rmax=0.61)
 ```
-The output from the above function contains three things: the value of the discriminant of the quadratic equation that is solved to compute the identified sets, and the _two identified sets_. The identified set is the interval formed by $\tilde{\beta}$ (treatment effect in the intermediate regression) and $\beta^*=\tilde{\beta}-\nu$, where $\nu$ is a root of a quadratic equation. It has been shown in Basu (2022) that the discriminant of this quadratic will always be positive. Hence, there will be _two_ real roots of the quadratic. Hence, there will be two identified sets, instead of a unique identified set. That is why we see two identified sets in the result above.
+The output from the above function contains three things: the value of the discriminant of the quadratic equation that is solved to compute the identified sets, and the _two identified sets_. The identified set is the interval formed by $\tilde{\beta}$ (treatment effect in the intermediate regression) and $\beta^*=\tilde{\beta}-\nu$, where $\nu$ is a root of a quadratic equation. 
+
+It has been shown in Proposition 5 in Basu (2022) that the discriminant of this quadratic will always be positive. Hence, there will be _two_ real roots of the quadratic. Hence, there will be two identified sets, instead of a unique identified set. That is why we see two identified sets in the result above.
 
 Let us also compute $\delta^*$, the value of $\delta$ that is associated with a given value of `Rmax` (in this case `Rmax=0.61`) such that the treatment effect is zero. 
 ```{r}
@@ -250,7 +254,7 @@ bate::osterdelstar(parameters = parameters, Rmax=0.61)
 ```
 In addition to the value of $\delta^*$, the output has two other things: 
 
-* `discontinuity`: this tells us whether the interval formed by $\tilde{R}$ and $1$ contains a point of discontinuity; if it is `FALSE`, then the interval does not contain the point of discontinuity; if it is `TRUE`, then the interval contains the point of discontinuity and the analysis of Oster (2019) should be avoided; for more details see Basu (2022).
+* `discontinuity`: this tells us whether the interval formed by $\tilde{R}$ and $1$ contains a point of discontinuity; if it is `FALSE`, then the interval does not contain the point of discontinuity; if it is `TRUE`, then the interval contains the point of discontinuity and the analysis of Oster (2019) should be avoided; for more details see Section 5.2 in Basu (2022).
 
 * `slope`: this gives the slope of the graph of the function $\delta=f(R_{max})$; the slope can be either `positive` or `negative` and helps in interpreting the meaning of $\delta^*$.
 
@@ -333,6 +337,6 @@ and quantiles of the BATE (computed over the bounded box we chose above).
 
 ## References
 
-* Basu, D. (2022). "Bounds for Bias-Adjusted Treatment Effect in Linear Econometric Models." 
+* Basu, D. (2022). "Bounds for Bias-Adjusted Treatment Effect in Linear Econometric Models." https://arxiv.org/abs/2203.12431
 
 * Oster, E. (2019). "Unobservable Selection and Coefficient Stability: Theory and Evidence." _Journal of Business & Economic Statistics_, 37:2, 187-204, DOI:10.1080/07350015.2016.1227711
