@@ -1,0 +1,11 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/878268/eac550e2515d4834bef11a31aa67bb5d
+bundleId: https://api.rpubs.com/api/v1/document/878268/eac550e2515d4834bef11a31aa67bb5d
+url: http://rpubs.com/dbasu/878268
+when: 1648172774.12911
+lastSyncTime: 1648172774.12912
