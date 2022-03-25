@@ -6,7 +6,7 @@ Authors@R: c(
     person("Evan", "Wasner", , "ewasner@umass.edu", role = c("aut")))
 Description: Compute bounds for the treatment effect 
     after adjusting for the presence of omitted variables in linear  
-    econometric models, according to the method of Basu (2022) <https://arxiv.org/abs/2203.12431>. 
+    econometric models, according to the method of Basu (2022) <arXiv:2203.12431>. 
     You supply the data, identify the outcome and 
     treatment variables and additional regressors. The main functions
     will compute bounds for the bias-adjusted treatment effect. Many

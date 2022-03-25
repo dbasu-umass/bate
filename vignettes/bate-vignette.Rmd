@@ -48,9 +48,28 @@ In a specific empirical analysis, a researcher will use domain knowledge about t
 In a similar manner, a researcher will use domain knowledge about the specific issue under investigation to determine `Rmax`. Here, it will be important to keep in mind that `Rmax` is the R-squared in the hypothetical long regression. Now, it is unlikely that including all omitted variables and thereby estimating the hypothetical long regression will give an R-squared of 1. This is because, even after all the regressors have been included, some variation of the outcome might be plausibly explained by a stochastic element. Hence, `Rmax` will most likely be different from, and less than, 1. This will be denoted by `Rhigh` (e.g. `Rmax=0.61`).
 
 ## The Algorithm
-How is the omitted variable bias and the BATE computed? The key result that is used to compute the BATE is this: the omitted variable bias is the real root of a _cubic equation_ whose coefficients are functions of the parameters of the short, intermediate and auxiliary regressions and the values of `delta` and `Rmax` (Proposition 2, Oster, 2019). In a specific empirical analysis, the parameters of the short, intermediate and auxiliary regressions are known. Hence, the coefficients of the cubic equation become functions of `delta` and `Rmax`, the two key parameters that the researcher chooses, using domain knowledge.
+How is the omitted variable bias and the BATE computed? The key result that is used to compute the BATE is this: the omitted variable bias is the real root of the following _cubic equation_ $$a \nu^3 + b \nu^2 + c \nu + d =0,$$ where 
 
-Once the researchers has chosen `deltalow`, `deltahigh` and `Rhigh`, this defines a bounded box on the (`delta`, `Rmax`) plane defined by the Cartesian product of the interval [`deltalow`, `deltahigh`] and of the interval [`Rlow`, `Rhigh`]. The main functions in this package computes the root of the cubic equation on a sufficiently granular grid (the degree of granularity will be chosen by the user) covering the bounded box.  
+* $a = (\delta -1)(\tau_X \sigma_X^2 - \tau_X^2) \neq 0,$ 
+* $b = \tau_X \left( \mathring{\beta} - \tilde{\beta}\right) \sigma^2_X \left( \delta - 2 \right),$ 
+* $c = \delta \left( R_{max} - \tilde{R} \right) \sigma^2_Y \left( \sigma^2_X - \tau_X \right)  - \left( \tilde{R} - \mathring{R} \right) \sigma^2_Y \tau_X - \sigma^2_X \tau_X \left( \mathring{\beta} - \tilde{\beta}\right)^2,$ and 
+* $d = \delta \left( R_{max} - \tilde{R} \right) \sigma^2_Y \left( \mathring{\beta} - \tilde{\beta}\right) \sigma^2_X,$ 
+
+where, in turn, 
+
+* $\sigma_Y^2$ is the variance of the outcome variable,
+* $\sigma_X^2$ is the variance of the treatment variable,
+* $\mathring{\beta}$ is the treatment effect in the short regression,
+* $\mathring{R}$ is the R-squared in the short regression,
+* $\tilde{\beta}$ is the treatment effect in the intermediate regression,
+* $\tilde{R}$ is the R-squared in the intermediate regression, and
+* $\tau_X^2$ is the variance of the residual in the auxiliary regression. 
+
+Hence, we see that the coefficients of the cubic equation are functions of the variances of the outcome and treatment variables ($\sigma_Y^2, \sigma_X^2$), parameters of the short regression ($\mathring{\beta}, \mathring{R}$), intermediate regression ($\tilde{\beta}, \tilde{R}$) and auxiliary regression ($\tau_X^2$), _and_ the values of `delta` and `Rmax`. The important result is that the omitted variable bias is the real root of the above _cubic equation_ (Proposition 2, Oster, 2019; Proposition 1 and 2 in Basu, 2022). 
+
+In a specific empirical analysis, the variances of the outcome and treatment variables, and the parameters of the short, intermediate and auxiliary regressions are known. Hence, the coefficients of the cubic equation become functions of `delta` and `Rmax`, the two key parameters that the researcher chooses, using domain knowledge.
+
+Once the researcher has chosen `deltalow`, `deltahigh` and `Rhigh`, this defines a bounded box on the (`delta`, `Rmax`) plane defined by the Cartesian product of the interval [`deltalow`, `deltahigh`] and of the interval [`Rlow`, `Rhigh`]. The main functions in this package computes the root of the cubic equation on a sufficiently granular grid (the degree of granularity will be chosen by the user) covering the bounded box.  
 
 To compute the root of the cubic equation, the algorithm first evaluates the discriminant of the cubic equation on each point of the grid and partitions the box into two regions: (a) unique real root (URR) and NURR (no unique real root). There are three cases to consider.
 
@@ -337,6 +356,6 @@ and quantiles of the BATE (computed over the bounded box we chose above).
 
 ## References
 
-* Basu, D. (2022). "Bounds for Bias-Adjusted Treatment Effect in Linear Econometric Models." https://arxiv.org/abs/2203.12431
+* Basu, D. (2022). "Bounds for Bias-Adjusted Treatment Effect in Linear Econometric Models." <arXiv:2203.12431>
 
-* Oster, E. (2019). "Unobservable Selection and Coefficient Stability: Theory and Evidence." _Journal of Business & Economic Statistics_, 37:2, 187-204, DOI:10.1080/07350015.2016.1227711
+* Oster, E. (2019). "Unobservable Selection and Coefficient Stability: Theory and Evidence." _Journal of Business & Economic Statistics_, 37:2, 187-204, <https://doi.org/10.1080/07350015.2016.1227711>
