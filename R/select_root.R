@@ -18,6 +18,6 @@ selectroot <- function(parameters, mydelta, Rmax, closest_bias){
     mutate(difference = abs(root-closest_bias))
   
   # Select root which is closest in absolute value to closest root and return
-  output <- filter(roots,difference==min(roots$difference))$root
+  output <- filter(roots,difference==min(roots$difference))$root[1]
   return(output)
 }

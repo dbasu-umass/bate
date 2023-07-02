@@ -14,7 +14,7 @@ Description: Compute bounds for the treatment effect
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 LazyData: true
 Imports: 
     ggplot2,
@@ -25,9 +25,10 @@ Imports:
     tidyselect,
     purrr,
     latex2exp,
-    vtable
+    sensemakr
 Suggests: 
     rmarkdown,
-    knitr
+    knitr,
+    vtable
 VignetteBuilder: knitr
 URL: https://github.com/dbasu-umass/bate/, https://rpubs.com/dbasu/bate/

@@ -20,8 +20,40 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-## Four Regressions
-The goal of the `bate` package is to present some functions to compute quantiles of the empirical distribution of the bias-adjusted treatment effect (BATE) in a linear econometric model with omitted variables. To analyze such models, a researcher should consider four regression models: (a) a short regression model where the outcome variable is regressed on the treatment variable, with or without additional controls; (b) an intermediate regression model where additional control variables are added to the short regression; (c) a _hypothetical_ long regression model, where an index of the omitted variable(s) is added to the intermediate regressions; and (d) an auxiliary regression where the treatment variable is regressed on all observed (and included) control variables. 
+The goal of the `bate` package is to present some functions to conduct sensitivity analysis of omitted variable bias in linear econometric models. The functions in this package present functions to implement two approaches: (a) the partial R-squared approach of Cinelli and Hazlett (2020); and (b) the $\delta$-$R_{max}$ approach of Oster (2019) implemented with an algorithm proposed in Basu (2022).
+
+## Cinelli and Hazlett (2020) Approach
+
+The Cinelli and Hazlett (2020) approach is implemented by the `cinhaz` function. To use this function, the user chooses the following parameters:
+
+* kd: this parameter measures the relative strength of the confounder in explaining variation in treatment as compared to benchmark covariate(s), e.g. kd=1
+* ky: this parameter measures the relative strength of the confounder in explaining variation in the outcome as compared to benchmark covariate(s), e.g. kd=1
+* data: this is the data frame for the regression
+* outcome: the name of the outcome variable
+* treatment: the name of the treatment variable
+* bnch_reg: name(s) of covariates to be used for benchmarking
+* other_reg: other covariates in the model (i.e. other than treatment and benchmark covariates)
+* alpha: significance level for the test of the null hypothesis that the true effect is zero, e.g. alpha=0.05
+
+Here is an example:
+
+```{r}
+library(sensemakr)
+
+bate::cinhaz(
+  kd=1, ky=1, data=darfur,outcome = "peacefactor",
+  treatment = "directlyharmed", bnch_reg = "female",
+  other_reg = c("village","age","farmer_dar","herder_dar","pastvoted","hhsize_darfur"),
+  alpha = 0.05
+)
+
+```
+
+## Oster (2019) Approach
+In implementing the $\delta$-$R_{max}$ approach of Oster (2019), the `bate` package presents some functions to compute quantiles of the empirical distribution of the bias-adjusted treatment effect (BATE). 
+
+### Four Regressions
+To analyze such models, a researcher should consider four regression models: (a) a short regression model where the outcome variable is regressed on the treatment variable, with or without additional controls; (b) an intermediate regression model where additional control variables are added to the short regression; (c) a _hypothetical_ long regression model, where an index of the omitted variable(s) is added to the intermediate regressions; and (d) an auxiliary regression where the treatment variable is regressed on all observed (and included) control variables. 
 
 As an example, suppose a researcher has estimated the following model, $$y = \alpha + \beta_1 x + \gamma_1 w_1 + \gamma_2 w_2 + \varepsilon,$$ and is interested in understanding the impact of some omitted variables on the results. In this case:
 
@@ -36,7 +68,7 @@ In this example, the estimated treatment effect is $\hat{\beta}_1$. In the prese
 
 The researcher will need to supply the data set (as a data frame), the name of the outcome variable, the name of the treatment variable, and the names of the additional regressors in the intermediate regression. The functions in this package will then compute the quantiles of the empirical distribution of BATE, $\beta^*$.
 
-## Two Important Parameters
+### Two Important Parameters
 Two parameters capture the effect of the omitted variables in this set up. 
 
 The first parameter is $\delta$. This captures the relative strength of the unobservables, compared to the observable controls, in explaining variation in the _treatement variable_. In the functions below this is denoted as the parameter `delta`.  This parameter is a real number and can take any value on the real line, i.e. it is unbounded. Hence, in any specific analysis, the researcher will have to choose a lower and an upper bound for `delta`. For instance, if in any empirical analysis, the researcher believes, based on knowledge of the specific problem being investigated, that the unobservables are _less_ important than the observed controls in explaining the variation in the _treatment variable_, then she could choose `delta` to lie between 0 and 1. On the other hand, if she believes that the unobservables are _more_ important than the observed controls in explaining the variation in the _treatment variable_, then she should choose `delta` to lie between 1 and 2 or 1 and 5.
@@ -47,7 +79,7 @@ In a specific empirical analysis, a researcher will use domain knowledge about t
 
 In a similar manner, a researcher will use domain knowledge about the specific issue under investigation to determine `Rmax`. Here, it will be important to keep in mind that `Rmax` is the R-squared in the hypothetical long regression. Now, it is unlikely that including all omitted variables and thereby estimating the hypothetical long regression will give an R-squared of 1. This is because, even after all the regressors have been included, some variation of the outcome might be plausibly explained by a stochastic element. Hence, `Rmax` will most likely be different from, and less than, 1. This will be denoted by `Rhigh` (e.g. `Rmax=0.61`).
 
-## The Algorithm
+### The Algorithm
 How is the omitted variable bias and the BATE computed? The key result that is used to compute the BATE is this: the omitted variable bias is the real root of the following _cubic equation_ $$a \nu^3 + b \nu^2 + c \nu + d =0,$$ where 
 
 * $a = (\delta -1)(\tau_X \sigma_X^2 - \tau_X^2) \neq 0,$ 
@@ -82,7 +114,7 @@ The bias is then used to compute the BATE, $\beta^*$, which is defined as the es
 The functions in this package will compute $\beta^*$ at each point of the grid that covers the bounded box chosen by the researcher. Hence, this will generate a large vector of values of $\beta^*$ and we can use this to compute the empirical distribution of $\beta^*$, the BATE. Asymptotic theory shows that the BATE converges in probability to the true treatment effect, i.e. $$\beta^* \overset{p}{\to} \beta.$$ Hence, the interval defined by the 2.5-th and 97.5-th quantiles of the empirical distribution of the BATE will contain the true treatment effect with 95 percent probability.
 
 
-## The Main Functions
+### The Main Functions
 This package provides three functions to compute quantiles of the empirical distribution of the omitted bias and BATE, `ovbias()`, `ovbias_lm()` and `ovbias_par()`. These functions implement the same algorithm to compute the empirical distribution of the bias and BATE and only differ in how the user provides the parameters of the short, intermediate and auxiliary regressions. But before we discuss the main functions, let us look at two other functions that are useful.
 
 An useful function to collect relevant parameters from the short, intermediate and auxiliary regressions is:
@@ -94,7 +126,7 @@ Users can use the output from `collect_par()` to construct an area plot of the b
 * `urrplot()`: creates a colored area plot of the bounded box chosen by the user demarcating the area where the cubic equation has unique real root (URR) from the area where the cubic equation has three real roots (NURR); the output is a plot object.
 
 
-### ovbias() function
+#### ovbias() function
 To use the `ovbias()` function, the user will need to run first collect the parameters from the short, intermediate and auxiliary regressions, using the `collect_par()` function and then feed it into the `ovbias()` function, along with the following:
 
 * deltalow: lower limit of `delta` (e.g. 0.01)
@@ -116,7 +148,7 @@ The output of the `ovbias()` function is a list of three elements.
 * bias_Distribution: Quantiles (2.5,5.0,50,95,97.5) of the empirical distribution of `bias`.
 * bstar_Distribution: Quantiles (2.5,5.0,50,95,97.5) of the empirical distribution of the BATE (`bstar`).
 
-### ovbias_par() function
+#### ovbias_par() function
 To use the `ovbias_par()` function, the user needs to specify the following:
 
 * data: the name of the data frame (e.g. NLSY_IQ)
@@ -131,7 +163,7 @@ To use the `ovbias_par()` function, the user needs to specify the following:
 
 The output of the `ovbias_par()` function is identically same with the output of the `ovbias()` function.
 
-### ovbias_lm() function
+#### ovbias_lm() function
 To use the `ovbias_lm()` function, the user needs to specify three `lm` objects that capture the short, intermediate and auxiliary regressions:
 
 * lm_shrt: lm object for the short regression
@@ -144,7 +176,7 @@ To use the `ovbias_lm()` function, the user needs to specify three `lm` objects 
 
 The output of the `ovbias_lm()` function is identically same with the output of the `ovbias()` function.
 
-### Additional Functions
+#### Additional Functions
 Using the output from `ovbias()`, `ovbias_par()` or `ovbias_lm()`, users can construct various plots to visualize the results:
 
 * `cplotbias()`: contour plot of the bias over the bounded box; the output of this function is a plot object;
@@ -158,14 +190,14 @@ The methodology proposed in Basu (2022) is slightly different from, and a critiq
 
 
 
-## Example: Impact of Maternal Behavior on Child IQ
+### Example: Impact of Maternal Behavior on Child IQ
 
 Install the package from CRAN and then load it.
 ```{r setup}
 library(bate)
 ```
 
-### Setting Up
+#### Setting Up
 Let us load the data set.
 ```{r}
 data("NLSY_IQ")
@@ -187,7 +219,7 @@ library(vtable)
 vtable::st(NLSY_IQ)
 ```
 
-### Setting Up the Analysis
+#### Setting Up the Analysis
 We will work with an example where the effect of _months of breastfeeding_ on _children's IQ score_ is analyzed. Thus, here, the outcome variable is a child's IQ score and the treatment variable is the months of breastfeeding by the mother. Additional control variables are: sex and age of the child, and the mother's age, the mother's years of formal education, whether the mother is married and the race of the mother. For further details of this example, see section 4.2 in Oster (2019). For ease of reference, let us note that we are working with the model reported in the first row of Table 3 in Oster (2019) and the first block of 4 rows in Table 2 in Basu (2022).
 
 Using the names of variables in the data set, we have:
@@ -227,7 +259,7 @@ bate::urrplot(parameters = parameters, deltalow = deltalow,
 ```
 
 
-### Using ovbias()
+#### Using ovbias()
 Now we can use the `ovbias()` function to compute the empirical distribution of omitted variable bias and BATE. Note that this step make take a few minutes, depending on the dimensions of the box and the size of `e`, to complete itself. As the function works, it will print a message in the console informing the user of the progress of the computation. Here, I have suppressed these messages.
 ```{r, message=FALSE}
 OVB <- bate::ovbias(
@@ -256,7 +288,7 @@ dplotbate(OVB$Data)
 ```
 
 
-### Comparing Our Results with Oster (2019)
+#### Comparing Our Results with Oster (2019)
 Let us compare our results with the methods proposed in Oster (2019). The methodology proposed in Oster (2019) relies on computing two things: (a) identified sets, and (b) $\delta^*$. 
 
 Let us compute the identified sets.
@@ -284,7 +316,7 @@ bate::delfplot(parameters = parameters)
 
 The red vertical dashed line in the plot identifies the value of $R_{max}$ that corresponds to $\delta=1$. In this example, this value of $R_{max}$ is $0.38$. This means that if a researcher uses any value of $R_{max}$ that is greater than $0.38$, she will get a value of $\delta^*$ that is less than $1$, and if she uses a value of $R_{max}$ that is less than $0.38$, she will get a value of $\delta^*$ that is greater than $1$.
 
-### Using the ovbias_par() function
+#### Using the ovbias_par() function
 We could have carried out the same analysis using the `ovbias_par()` function.
 ```{r, message=FALSE}
 OVB.par <- ovbias_par(
@@ -307,7 +339,7 @@ and quantiles of the BATE (computed over the bounded box we chose above).
 (OVB.par$bstar_Distribution)
 ```
 
-### Using the ovbias_lm() function
+#### Using the ovbias_lm() function
 We could have also carried out the same analysis using the `ovbias_lm()` function. To use this function, we need to estimate the short regression
 ```{r}
 reg_col1 <- lm(
@@ -357,5 +389,7 @@ and quantiles of the BATE (computed over the bounded box we chose above).
 ## References
 
 * Basu, D. (2022). "Bounds for Bias-Adjusted Treatment Effect in Linear Econometric Models." <arXiv:2203.12431>
+
+* Cinelli, C. and Hazlett, C. (2020). Making Sense of Sensitivity: Extending Omitted Variable Bias. _Journal of the Royal Statistical Society Series B: Statistical Methodology_, 82(1):39–67. <https://doi.org/10.1111/rssb.12348>
 
 * Oster, E. (2019). "Unobservable Selection and Coefficient Stability: Theory and Evidence." _Journal of Business & Economic Statistics_, 37:2, 187-204, <https://doi.org/10.1080/07350015.2016.1227711>
